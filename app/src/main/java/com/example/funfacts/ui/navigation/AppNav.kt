@@ -1,5 +1,8 @@
 package com.example.funfacts.ui.navigation//package com.example.funfacts.ui.navigation
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -11,6 +14,7 @@ import com.example.funfacts.ui.screens.HomeScreen
 fun AppNav() {
     val backStack = rememberNavBackStack(AppScreen.Home)
 
+    val paddingValues = null
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
@@ -20,9 +24,21 @@ fun AppNav() {
                     onNavigateToCustom = { backStack.add(AppScreen.CustomFacts) }
                 )
             }
-            entry<AppScreen.CustomFacts> {
+            entry<AppScreen.CustomFacts>
+                {
                CustomScreen(onBack = { backStack.removeLastOrNull() })
             }
-        }
+        },
+        transitionSpec = {
+            // Slide in from right when navigating forward
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { it })
+        },
+
     )
 }

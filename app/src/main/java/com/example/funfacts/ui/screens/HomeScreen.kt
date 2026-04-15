@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -171,7 +169,7 @@ fun BannerCard() {
 
             Text(
                 text = "Discover random, worthless facts you absolutely need.",
-                style = Typography.titleMedium,
+                style = Typography.titleLarge,
 
             )
         }
@@ -193,12 +191,7 @@ fun FactCard(fact: Fact?, onFetch: () -> Unit, isLoading: Boolean) {
             .height(225.dp)
             .padding(horizontal = 16.dp)
     ) {
-//        Icon(
-//            imageVector = Icons.Default.Info,
-//            contentDescription = null,
-//            tint = Color.LightGray.copy(alpha = 0.3f),
-//            modifier = Modifier.size(30.dp)
-//        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

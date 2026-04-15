@@ -16,21 +16,21 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = Oswald,
         fontWeight = FontWeight.Normal,
-        fontSize = 32.sp,
-        lineHeight = 24.sp,
+        fontSize = 35.sp,
+        lineHeight = 40.sp,
         letterSpacing = 0.5.sp
     ),
     titleMedium = TextStyle(
         fontFamily = Oswald,
         fontWeight = FontWeight.Normal,
-        fontSize = 35.sp,
-        lineHeight = 40.sp,
+        fontSize = 32.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
         bodyLarge = TextStyle(
         fontFamily = Oswald,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
