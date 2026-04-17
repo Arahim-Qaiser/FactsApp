@@ -17,7 +17,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,6 +27,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,14 +43,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.funfacts.data.Fact
-import com.example.funfacts.ui.theme.Gray40
 import com.example.funfacts.ui.theme.Green40
 import com.example.funfacts.ui.theme.Typography
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
-    onNavigateToCustom: () -> Unit
+    onNavigateToCustom: () -> Unit,
+    onToggleTheme: () -> Unit
 ) {
     val fact by viewModel.fact.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -54,7 +59,8 @@ fun HomeScreen(
         fact = fact,
         isLoading = isLoading,
         onFetch = { viewModel.fetchRandomFact() },
-        onNavigateToCustom = onNavigateToCustom
+        onNavigateToCustom = onNavigateToCustom,
+        onToggleTheme = onToggleTheme
     )
 }
 
@@ -63,15 +69,17 @@ fun HomeScreenContent(
     fact: Fact?,
     isLoading: Boolean,
     onFetch: () -> Unit,
-    onNavigateToCustom: () -> Unit
+    onNavigateToCustom: () -> Unit,
+    onToggleTheme: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing),
-        containerColor = Gray40,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            HomeTopBar(onNavigateToCustom = onNavigateToCustom)
+            HomeTopBar(onNavigateToCustom = onNavigateToCustom,
+                onToggleTheme = onToggleTheme)
         },
         bottomBar = {
             FooterText()
@@ -102,41 +110,50 @@ fun HomeScreenContent(
 }
 
 @Composable
-fun HomeTopBar(onNavigateToCustom: () -> Unit) {
+fun HomeTopBar(onNavigateToCustom: () -> Unit, onToggleTheme: () -> Unit) {
+    val isDark = MaterialTheme.colorScheme.surface == Color(0xFF1E1E1E)
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 32.dp, start = 8.dp, end = 8.dp)
             .height(64.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(28.dp))
+            .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(28.dp))
             .padding(horizontal = 24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Facts.xy",
             style = Typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary
         )
 
         Spacer(Modifier.weight(1f))
-
-        Button(
-            onClick = onNavigateToCustom,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Green40,
-                contentColor = Color.Black
-            )
-        ) {
-            Text(
-                "Custom Facts",
-                style = Typography.bodySmall,
-                modifier = Modifier.padding(end = 4.dp)
-            )
-
+        IconButton(onClick = onToggleTheme,
+            colors = IconButtonDefaults.iconButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                containerColor = MaterialTheme.colorScheme.secondary,
+            ),
+            modifier = Modifier.padding(start = 4.dp),
+        ){
             Icon(
-                imageVector = Icons.Default.ArrowForward,
+                imageVector = if (isDark) Icons.Default.LightMode else Icons.Default.Bedtime,
+                contentDescription = "Theme Toggle",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                )
+        }
+        IconButton(onClick = onNavigateToCustom,
+            colors = IconButtonDefaults.iconButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                containerColor = MaterialTheme.colorScheme.secondary,
+            ),
+            modifier = Modifier.padding(start = 4.dp),
+        ){
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Forward",
-                tint = Color.Black,
-            )
+                tint = MaterialTheme.colorScheme.onPrimary,
+                )
         }
     }
 }
@@ -150,8 +167,8 @@ fun BannerCard() {
         elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Green40,
-            contentColor = Color.Black
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         )
     ) {
         Row(
@@ -170,7 +187,6 @@ fun BannerCard() {
             Text(
                 text = "Discover random, worthless facts you absolutely need.",
                 style = Typography.titleLarge,
-
             )
         }
     }
@@ -184,7 +200,7 @@ fun FactCard(fact: Fact?, onFetch: () -> Unit, isLoading: Boolean) {
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -202,7 +218,7 @@ fun FactCard(fact: Fact?, onFetch: () -> Unit, isLoading: Boolean) {
             if (isLoading) {
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(
-                        color = Green40
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -213,7 +229,8 @@ fun FactCard(fact: Fact?, onFetch: () -> Unit, isLoading: Boolean) {
                             .align(Alignment.CenterHorizontally)
                             .weight(1f)
                             .verticalScroll(scrollState),
-                        style = Typography.bodyLarge
+                        style = Typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onTertiary
                     )
                 }
             Spacer(modifier = Modifier.height(16.dp))
@@ -222,8 +239,8 @@ fun FactCard(fact: Fact?, onFetch: () -> Unit, isLoading: Boolean) {
                 onClick = onFetch,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Green40,
-                    contentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text(
@@ -241,7 +258,7 @@ fun FooterText() {
         text = "built for test",
         textAlign = TextAlign.Center,
         style = Typography.bodySmall,
-        color = Green40,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
@@ -264,6 +281,7 @@ fun HomeScreenPreview() {
         fact = dummyFact,
         isLoading = false,
         onFetch = {},
-        onNavigateToCustom = {}
+        onNavigateToCustom = {},
+        onToggleTheme = {}
     )
 }

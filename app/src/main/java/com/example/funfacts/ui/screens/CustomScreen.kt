@@ -17,7 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +26,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -40,18 +41,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.funfacts.data.entities.CustomFactEntity
-import com.example.funfacts.ui.theme.Gray40
-import com.example.funfacts.ui.theme.Green40
 import com.example.funfacts.ui.theme.Typography
 
 @Composable
 fun InputCard(text: String, onTextChange: (String) -> Unit) {
-    val scrollState = rememberScrollState()
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -72,12 +70,14 @@ fun InputCard(text: String, onTextChange: (String) -> Unit) {
                 shape = RoundedCornerShape(28.dp),
 
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    disabledContainerColor = Color.White,
+                    focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                    disabledContainerColor = MaterialTheme.colorScheme.tertiary,
 
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
 
                 modifier = Modifier
@@ -100,8 +100,9 @@ fun FactsList(facts: List<CustomFactEntity>, onDelete: (CustomFactEntity) -> Uni
                     .fillMaxWidth()
                     .padding(vertical = 6.dp),
                 shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(8.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.tertiary
                 )
             ) {
 
@@ -114,13 +115,15 @@ fun FactsList(facts: List<CustomFactEntity>, onDelete: (CustomFactEntity) -> Uni
 
                     Text(
                         text = fact.text,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     IconButton(onClick = {onDelete(fact)}) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Delete"
+                            contentDescription = "Delete",
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -161,7 +164,7 @@ fun CustomScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing),
-        containerColor = Gray40,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CustomTopBar(onBack = onBack)
       },
@@ -185,8 +188,8 @@ fun CustomScreenContent(
             Button(
                 onClick = onAddFact,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Green40,
-                    contentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text(
@@ -214,30 +217,33 @@ fun CustomTopBar(onBack: () -> Unit,)
             .padding(top = 32.dp, start = 8.dp, end = 8.dp)
             .height(64.dp)
             .background(
-                color = Color.White,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(28.dp),
             ).padding(8.dp)
     ) {
 
         IconButton(onClick = onBack,
             colors = IconButtonDefaults.iconButtonColors(
-                contentColor = Color.Black,
-                containerColor = Green40,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                containerColor = MaterialTheme.colorScheme.secondary,
             ),
-            modifier = Modifier.padding(start = 4.dp),
+            modifier = Modifier.padding(start = 4.dp)
+                .align(Alignment.CenterStart),
         ){
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
-                tint = Color.Black,
+                tint = MaterialTheme.colorScheme.onPrimary,
 
             )
         }
         Text(
             text = "Custom Facts.xy",
             style = Typography.titleLarge,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.Center),
+            color = MaterialTheme.colorScheme.onPrimary
         )
+
     }
 }
 

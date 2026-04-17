@@ -11,7 +11,7 @@ import com.example.funfacts.ui.screens.CustomScreen
 import com.example.funfacts.ui.screens.HomeScreen
 
 @Composable
-fun AppNav() {
+fun AppNav(onToggleTheme: () -> Unit) {
     val backStack = rememberNavBackStack(AppScreen.Home)
 
     val paddingValues = null
@@ -21,7 +21,8 @@ fun AppNav() {
         entryProvider = entryProvider {
             entry<AppScreen.Home> {
                 HomeScreen(
-                    onNavigateToCustom = { backStack.add(AppScreen.CustomFacts) }
+                    onNavigateToCustom = { backStack.add(AppScreen.CustomFacts) },
+                    onToggleTheme = onToggleTheme
                 )
             }
             entry<AppScreen.CustomFacts>

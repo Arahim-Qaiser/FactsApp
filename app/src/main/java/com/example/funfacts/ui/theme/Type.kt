@@ -16,7 +16,7 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = Oswald,
         fontWeight = FontWeight.Normal,
-        fontSize = 35.sp,
+        fontSize = 30.sp,
         lineHeight = 40.sp,
         letterSpacing = 0.5.sp
     ),
