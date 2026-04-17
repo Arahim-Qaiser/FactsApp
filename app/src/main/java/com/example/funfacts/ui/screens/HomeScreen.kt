@@ -116,7 +116,7 @@ fun HomeTopBar(onNavigateToCustom: () -> Unit, onToggleTheme: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 32.dp, start = 8.dp, end = 8.dp)
+            .padding(top = 16.dp, start = 8.dp, end = 8.dp)
             .height(64.dp)
             .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(28.dp))
             .padding(horizontal = 24.dp),
