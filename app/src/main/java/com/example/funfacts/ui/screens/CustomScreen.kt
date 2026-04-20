@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -28,12 +27,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -140,6 +143,15 @@ fun CustomScreen(
 ) {
     val text by viewModel.inputText.collectAsState()
     val facts by viewModel.facts.collectAsState(initial = emptyList())
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.snackbarEvent.collect { event ->
+            snackbarHostState.showSnackbar(
+                message = event.message
+            )
+        }
+    }
 
     CustomScreenContent(
         text = text,
@@ -147,7 +159,8 @@ fun CustomScreen(
         onBack = onBack,
         onTextChange = { viewModel.onTextChange(it) },
         onAddFact = { viewModel.addFact() },
-        onDeleteFact = { fact -> viewModel.deleteFact(fact) }
+        onDeleteFact = { fact -> viewModel.deleteFact(fact) },
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -158,13 +171,15 @@ fun CustomScreenContent(
     onBack: () -> Unit,
     onTextChange: (String) -> Unit,
     onAddFact: () -> Unit,
-    onDeleteFact: (CustomFactEntity) -> Unit
+    onDeleteFact: (CustomFactEntity) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing),
         containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             CustomTopBar(onBack = onBack)
       },
@@ -262,6 +277,7 @@ fun CustomScreenPreview() {
         onBack = {},
         onTextChange = {},
         onAddFact = {},
-        onDeleteFact = {}
+        onDeleteFact = {},
+        snackbarHostState = SnackbarHostState()
     )
 }
