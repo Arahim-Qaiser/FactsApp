@@ -1,21 +1,17 @@
 package com.example.funfacts.ui.screens
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.funfacts.data.DatabaseProvider
 import com.example.funfacts.data.entities.CustomFactEntity
 import com.example.funfacts.data.repository.CustomFactRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 enum class FactSnackbarEvent(val message: String, val isSuccess: Boolean) {
     ADDED("Fact added successfully!", true),
@@ -23,7 +19,10 @@ enum class FactSnackbarEvent(val message: String, val isSuccess: Boolean) {
     ERROR("Operation failed!", false)
 }
 
-class CustomViewModel(private val repository: CustomFactRepository) : ViewModel() {
+@HiltViewModel
+class CustomViewModel @Inject constructor(
+    private val repository: CustomFactRepository
+) : ViewModel() {
 
     val facts = repository.allFacts
 
@@ -58,17 +57,6 @@ class CustomViewModel(private val repository: CustomFactRepository) : ViewModel(
                 _snackbarEvent.emit(FactSnackbarEvent.REMOVED)
             } catch (e: Exception) {
                 _snackbarEvent.emit(FactSnackbarEvent.ERROR)
-            }
-        }
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as Application)
-                val database = DatabaseProvider.getDatabase(application)
-                val repository = CustomFactRepository(database.dao())
-                CustomViewModel(repository)
             }
         }
     }

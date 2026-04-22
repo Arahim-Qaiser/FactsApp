@@ -42,7 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.funfacts.data.entities.CustomFactEntity
 import com.example.funfacts.ui.theme.Typography
 
@@ -138,7 +138,7 @@ fun FactsList(facts: List<CustomFactEntity>, onDelete: (CustomFactEntity) -> Uni
 
 @Composable
 fun CustomScreen(
-    viewModel: CustomViewModel = viewModel(factory = CustomViewModel.Factory),
+    viewModel: CustomViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
     val text by viewModel.inputText.collectAsState()

@@ -4,14 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.funfacts.data.Fact
 import com.example.funfacts.data.FactRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repository: FactRepository
+) : ViewModel() {
 
-    private val repository = FactRepository()
     private val _fact = MutableStateFlow<Fact?>(null)
     val fact: StateFlow<Fact?> = _fact
 
@@ -24,9 +28,7 @@ class HomeViewModel : ViewModel() {
 
     fun fetchRandomFact() {
         viewModelScope.launch {
-
             _isLoading.value = true
-
             try {
                 _fact.value = repository.getRandomFacts()
             } catch (e: Exception) {
@@ -38,11 +40,9 @@ class HomeViewModel : ViewModel() {
                     language = "",
                     permalink = ""
                 )
-            }
-            finally {
+            } finally {
                 _isLoading.value = false
             }
         }
     }
-
 }

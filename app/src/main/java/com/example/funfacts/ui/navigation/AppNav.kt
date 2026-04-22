@@ -14,7 +14,6 @@ import com.example.funfacts.ui.screens.HomeScreen
 fun AppNav(onToggleTheme: () -> Unit) {
     val backStack = rememberNavBackStack(AppScreen.Home)
 
-    val paddingValues = null
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
