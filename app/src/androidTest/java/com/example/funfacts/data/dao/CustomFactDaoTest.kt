@@ -21,7 +21,7 @@ class CustomFactDaoTest {
 
     @Before
     fun setup() {
-        // Use an in-memory database so the data is cleared after every test
+
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             AppDatabase::class.java
