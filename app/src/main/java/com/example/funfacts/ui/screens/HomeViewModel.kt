@@ -35,10 +35,6 @@ class HomeViewModel @Inject constructor(
                 _fact.value = Fact(
                     id = "",
                     text = "Error fetching fact",
-                    source = "",
-                    sourceUrl = "",
-                    language = "",
-                    permalink = ""
                 )
             } finally {
                 _isLoading.value = false
