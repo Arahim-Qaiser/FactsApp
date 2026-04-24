@@ -16,4 +16,12 @@ class CustomFactRepository(
     suspend fun deleteFact(fact: CustomFactEntity) {
         dao.deleteFact(fact)
     }
+    suspend fun updateFact(fact: CustomFactEntity) {
+        dao.updateFact(
+            CustomFactEntity(
+                id = fact.id,
+                text = fact.text
+            )
+        )
+    }
 }

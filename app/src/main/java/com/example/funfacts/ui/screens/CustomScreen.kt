@@ -1,5 +1,6 @@
 package com.example.funfacts.ui.screens
 
+import android.R.style.Theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.funfacts.data.entities.CustomFactEntity
+import com.example.funfacts.ui.theme.FunFactsTheme
 import com.example.funfacts.ui.theme.Typography
 
 @Composable
@@ -271,13 +273,16 @@ fun CustomScreenPreview() {
         CustomFactEntity(id = 3, text = "Bananas are berries")
     )
 
-    CustomScreenContent(
-        text = "",
-        facts = dummyFacts,
-        onBack = {},
-        onTextChange = {},
-        onAddFact = {},
-        onDeleteFact = {},
-        snackbarHostState = SnackbarHostState()
-    )
+    FunFactsTheme {
+        CustomScreenContent(
+            text = "",
+            facts = dummyFacts,
+            onBack = {},
+            onTextChange = {},
+            onAddFact = {},
+            onDeleteFact = {},
+            snackbarHostState = SnackbarHostState()
+        )
+    }
+
 }

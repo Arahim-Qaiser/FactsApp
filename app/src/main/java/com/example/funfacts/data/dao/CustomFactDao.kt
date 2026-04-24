@@ -3,6 +3,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.funfacts.data.entities.CustomFactEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -17,4 +18,8 @@ interface CustomFactDao {
 
     @Delete
     suspend fun deleteFact(fact: CustomFactEntity)
+
+    @Update
+    suspend fun updateFact(fact: CustomFactEntity)
+
 }

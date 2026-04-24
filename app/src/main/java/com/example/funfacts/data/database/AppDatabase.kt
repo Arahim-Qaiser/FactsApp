@@ -11,4 +11,5 @@ import com.example.funfacts.data.entities.CustomFactEntity
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dao(): CustomFactDao
+
 }

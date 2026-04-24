@@ -32,6 +32,7 @@ class CustomViewModel @Inject constructor(
     private val _snackbarEvent = MutableSharedFlow<FactSnackbarEvent>()
     val snackbarEvent: SharedFlow<FactSnackbarEvent> = _snackbarEvent.asSharedFlow()
 
+
     fun onTextChange(newText: String) {
         _inputText.value = newText
     }
@@ -55,6 +56,16 @@ class CustomViewModel @Inject constructor(
             try {
                 repository.deleteFact(fact)
                 _snackbarEvent.emit(FactSnackbarEvent.REMOVED)
+            } catch (e: Exception) {
+                _snackbarEvent.emit(FactSnackbarEvent.ERROR)
+            }
+        }
+    }
+    fun updateFact(fact: CustomFactEntity) {
+        viewModelScope.launch {
+            try {
+                repository.updateFact(fact)
+                _snackbarEvent.emit(FactSnackbarEvent.ADDED)
             } catch (e: Exception) {
                 _snackbarEvent.emit(FactSnackbarEvent.ERROR)
             }
