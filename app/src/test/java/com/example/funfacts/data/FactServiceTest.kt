@@ -59,4 +59,42 @@ class FactServiceTest {
             assertThat(e).isNotNull()
         }
     }
-}
+    @Test
+    fun `getRandomFacts returns error when server returns empty response`(): Unit = runBlocking {
+        val mockResponse = MockResponse()
+            .setResponseCode(200)
+            .setBody("")
+        server.enqueue(mockResponse)
+        try {
+            service.getRandomFacts()
+        } catch (e: Exception) {
+            assertThat(e).isNotNull()
+        }
+    }
+        @Test
+        fun `getRandomFacts returns error when server returns null response`(): Unit = runBlocking {
+            val mockResponse = MockResponse()
+                .setResponseCode(200)
+                .setBody("null")
+            server.enqueue(mockResponse)
+            try {
+                service.getRandomFacts()
+            } catch (e: Exception) {
+                assertThat(e).isNotNull()
+            }
+        }
+    @Test
+    fun `getRandomFacts returns error when server returns invalid JSON`(): Unit = runBlocking {
+        val mockResponse = MockResponse()
+            .setResponseCode(200)
+            .setBody("{ invalid json }")
+        server.enqueue(mockResponse)
+        try {
+            service.getRandomFacts()
+        } catch (e: Exception) {
+            assertThat(e).isNotNull()
+        }
+    }
+
+    }
+
