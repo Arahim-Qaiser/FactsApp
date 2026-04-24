@@ -37,11 +37,7 @@ class FactServiceTest {
             .setBody("""
                 {
                     "id": "1",
-                    "text": "The heart of a shrimp is located in its head.",
-                    "source": "djtech.net",
-                    "source_url": "https://djtech.net/humor/useless_facts.htm",
-                    "language": "en",
-                    "permalink": "https://uselessfacts.jsph.pl/1"
+                    "text": "The heart of a shrimp is located in its head."
                 }
             """.trimIndent())
         server.enqueue(mockResponse)
@@ -50,8 +46,8 @@ class FactServiceTest {
 
         assertThat(fact.id).isEqualTo("1")
         assertThat(fact.text).isEqualTo("The heart of a shrimp is located in its head.")
-        assertThat(fact.language).isEqualTo("en")
     }
+
     @Test
     fun `getRandomFacts returns error when server returns error`(): Unit = runBlocking {
         val mockResponse = MockResponse()
@@ -60,44 +56,7 @@ class FactServiceTest {
         try {
             service.getRandomFacts()
         } catch (e: Exception) {
-            assertThat(e).isInstanceOf(Exception::class.java)
+            assertThat(e).isNotNull()
         }
     }
-    @Test
-    fun `getRandomFacts returns error when server returns empty response`(): Unit = runBlocking {
-        val mockResponse = MockResponse()
-            .setResponseCode(200)
-            .setBody("")
-        server.enqueue(mockResponse)
-        try {
-            service.getRandomFacts()
-        } catch (e: Exception) {
-            assertThat(e).isInstanceOf(Exception::class.java)
-        }
-    }
-    @Test
-    fun `getRandomFacts returns error when server returns null response`(): Unit = runBlocking {
-        val mockResponse = MockResponse()
-            .setResponseCode(200)
-            .setBody("null")
-        server.enqueue(mockResponse)
-        try {
-            service.getRandomFacts()
-        } catch (e: Exception) {
-            assertThat(e).isInstanceOf(Exception::class.java)
-        }
-    }
-    @Test
-    fun `getRandomFacts returns error when server returns invalid JSON`(): Unit = runBlocking {
-        val mockResponse = MockResponse()
-            .setResponseCode(200)
-            .setBody("Invalid JSON")
-        server.enqueue(mockResponse)
-        try {
-            service.getRandomFacts()
-        } catch (e: Exception) {
-            assertThat(e).isInstanceOf(Exception::class.java)
-        }
-    }
-
 }

@@ -272,10 +272,6 @@ fun HomeScreenPreview() {
     val dummyFact = Fact(
         id = "123",
         text = "Bananas are actually berries, but strawberries aren't.",
-        source = "123",
-        sourceUrl = "123",
-        language = "en",
-        permalink = "123"
     )
 
     HomeScreenContent(
