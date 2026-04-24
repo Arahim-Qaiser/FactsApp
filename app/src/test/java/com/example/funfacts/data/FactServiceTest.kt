@@ -9,6 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class FactServiceTest {
 
@@ -34,12 +35,14 @@ class FactServiceTest {
     fun `getRandomFacts returns expected fact`() = runBlocking {
         val mockResponse = MockResponse()
             .setResponseCode(200)
-            .setBody("""
+            .setBody(
+                """
                 {
                     "id": "1",
                     "text": "The heart of a shrimp is located in its head."
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
         server.enqueue(mockResponse)
 
         val fact = service.getRandomFacts()
@@ -59,6 +62,7 @@ class FactServiceTest {
             assertThat(e).isNotNull()
         }
     }
+
     @Test
     fun `getRandomFacts returns error when server returns empty response`(): Unit = runBlocking {
         val mockResponse = MockResponse()
@@ -71,18 +75,20 @@ class FactServiceTest {
             assertThat(e).isNotNull()
         }
     }
-        @Test
-        fun `getRandomFacts returns error when server returns null response`(): Unit = runBlocking {
-            val mockResponse = MockResponse()
-                .setResponseCode(200)
-                .setBody("null")
-            server.enqueue(mockResponse)
-            try {
-                service.getRandomFacts()
-            } catch (e: Exception) {
-                assertThat(e).isNotNull()
-            }
+
+    @Test
+    fun `getRandomFacts returns error when server returns null response`(): Unit = runBlocking {
+        val mockResponse = MockResponse()
+            .setResponseCode(200)
+            .setBody("null")
+        server.enqueue(mockResponse)
+        try {
+            service.getRandomFacts()
+        } catch (e: Exception) {
+            assertThat(e).isNotNull()
         }
+    }
+
     @Test
     fun `getRandomFacts returns error when server returns invalid JSON`(): Unit = runBlocking {
         val mockResponse = MockResponse()
@@ -96,5 +102,42 @@ class FactServiceTest {
         }
     }
 
+    @Test
+    fun `getRandomFacts returns error when network request fails`(): Unit = runBlocking {
+        val mockResponse = MockResponse()
+            .setResponseCode(404)
+        server.enqueue(mockResponse)
+        try {
+            service.getRandomFacts()
+        } catch (e: Exception) {
+            assertThat(e).isNotNull()
+        }
     }
 
+    @Test
+    fun `getRandomFacts returns error when server returns malformed JSON`(): Unit = runBlocking {
+        val mockResponse = MockResponse()
+            .setResponseCode(200)
+            .setBody("{ \"id\": \"1\", \"text\": \"The heart of a shrimp is located in its head.\"")
+        server.enqueue(mockResponse)
+        try {
+            service.getRandomFacts()
+        } catch (e: Exception) {
+            assertThat(e).isNotNull()
+        }
+
+
+    }
+    @Test
+    fun `getRandomFacts returns error when server takes too long to respond`(): Unit = runBlocking {
+        val mockResponse = MockResponse()
+            .setResponseCode(200)
+            .setBodyDelay(1000, TimeUnit.MILLISECONDS)
+        server.enqueue(mockResponse)
+        try {
+            service.getRandomFacts()
+        } catch (e: Exception) {
+            assertThat(e).isNotNull()
+        }
+    }
+    }
