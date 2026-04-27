@@ -4,8 +4,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FactRepository @Inject constructor() {
-    suspend fun getRandomFacts(lang : String = "en") :Fact {
-        return RetrofitInstance.factService.getRandomFacts(lang)
+class FactRepository @Inject constructor(
+    private val factService: FactService
+) {
+    suspend fun getRandomFacts(lang : String = "en") : Fact {
+        return factService.getRandomFacts(lang)
     }
 }
