@@ -43,7 +43,6 @@ android {
     }
 }
 
-// Correct Jacoco configuration for Kotlin DSL
 jacoco {
     toolVersion = "0.8.11"
 }
@@ -55,7 +54,7 @@ tasks.withType<Test> {
     }
 }
 
-val jacocoTestReport by tasks.registering(JacocoReport::class) {
+tasks.register<JacocoReport>("jacocoTestReport") {
     dependsOn("testDebugUnitTest", "connectedDebugAndroidTest")
 
     reports {
@@ -118,17 +117,23 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // Unit Testing
     testImplementation(libs.junit)
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("com.google.truth:truth:1.4.2")
+    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
+    // Instrumented Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     androidTestImplementation("com.google.truth:truth:1.4.2")
+    androidTestImplementation("org.mockito:mockito-android:5.11.0")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
