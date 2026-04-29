@@ -1,5 +1,6 @@
 package com.example.funfacts.ui.screens
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -27,10 +28,15 @@ class HomeScreenTest {
                 isLoading = false,
                 onFetch = {},
                 onNavigateToCustom = {},
-                onToggleTheme = {}
+                onToggleTheme = {},
+                snackbarHostState = SnackbarHostState(),
+                isFavorited = false,
+                onFavoriteClick = {},
+
+
+
             )
         }
-
         // Verify banner text
         composeTestRule.onNodeWithText(defaultText).assertIsDisplayed()
         
@@ -46,7 +52,11 @@ class HomeScreenTest {
                 isLoading = true,
                 onFetch = {},
                 onNavigateToCustom = {},
-                onToggleTheme = {}
+                onToggleTheme = {},
+                snackbarHostState = SnackbarHostState(),
+                isFavorited = false,
+                onFavoriteClick = {},
+
             )
         }
 
@@ -63,7 +73,11 @@ class HomeScreenTest {
                 isLoading = false,
                 onFetch = onFetchMock,
                 onNavigateToCustom = {},
-                onToggleTheme = {}
+                onToggleTheme = {},
+                snackbarHostState = SnackbarHostState(),
+                isFavorited = false,
+                onFavoriteClick = {},
+
             )
         }
 
@@ -82,7 +96,11 @@ class HomeScreenTest {
                 isLoading = false,
                 onFetch = {},
                 onNavigateToCustom = onNavigateMock,
-                onToggleTheme = {}
+                onToggleTheme = {},
+                snackbarHostState = SnackbarHostState(),
+                isFavorited = false,
+                onFavoriteClick = {},
+
             )
         }
 
