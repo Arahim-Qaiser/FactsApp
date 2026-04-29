@@ -61,14 +61,5 @@ class CustomViewModel @Inject constructor(
             }
         }
     }
-    fun updateFact(fact: CustomFactEntity) {
-        viewModelScope.launch {
-            try {
-                repository.updateFact(fact)
-                _snackbarEvent.emit(FactSnackbarEvent.ADDED)
-            } catch (e: Exception) {
-                _snackbarEvent.emit(FactSnackbarEvent.ERROR)
-            }
-        }
-    }
+
 }
