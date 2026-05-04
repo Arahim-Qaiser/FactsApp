@@ -17,4 +17,8 @@ class CustomFactRepository(
         dao.deleteFact(fact)
     }
 
+    suspend fun deleteFactByText(text: String) {
+        dao.deleteFactByText(text)
+    }
+
 }

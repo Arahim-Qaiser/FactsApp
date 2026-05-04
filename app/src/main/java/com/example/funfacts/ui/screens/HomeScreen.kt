@@ -75,7 +75,7 @@ fun HomeScreen(
         isLoading = isLoading,
         isFavorited = isFavorited,
         onFetch = { viewModel.fetchRandomFact() },
-        onFavoriteClick = { viewModel.saveToFavorites() },
+        onFavoriteClick = { viewModel.toggleFavorite() },
         onNavigateToCustom = onNavigateToCustom,
         onToggleTheme = onToggleTheme,
         snackbarHostState = snackbarHostState
@@ -245,7 +245,7 @@ fun FactCard(
             // Favorite Button at Top Right
             IconButton(
                 onClick = onFavoriteClick,
-                enabled = !isLoading && fact != null && !isFavorited,
+                enabled = !isLoading && fact != null,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)

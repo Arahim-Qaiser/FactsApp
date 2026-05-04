@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +30,15 @@ class HomeViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    private val _isFavorited = MutableStateFlow(false)
-    val isFavorited: StateFlow<Boolean> = _isFavorited.asStateFlow()
+    // Observe the repository to keep favorited state in sync across screens
+    val isFavorited: StateFlow<Boolean> = combine(_fact, customRepository.allFacts) { currentFact, allCustomFacts ->
+        if (currentFact == null) false
+        else allCustomFacts.any { it.text == currentFact.text }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = false
+    )
 
     private val _snackbarMessage = MutableSharedFlow<String>()
     val snackbarMessage: SharedFlow<String> = _snackbarMessage.asSharedFlow()
@@ -40,7 +50,6 @@ class HomeViewModel @Inject constructor(
     fun fetchRandomFact() {
         viewModelScope.launch {
             _isLoading.value = true
-            _isFavorited.value = false
             try {
                 _fact.value = repository.getRandomFacts()
             } catch (e: Exception) {
@@ -54,17 +63,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun saveToFavorites() {
-        val currentFact = _fact.value
-        if (currentFact != null && currentFact.id.isNotBlank() && !_isFavorited.value) {
-            viewModelScope.launch {
-                try {
+    fun toggleFavorite() {
+        val currentFact = _fact.value ?: return
+        if (currentFact.id.isBlank() || currentFact.text == "Error fetching fact") return
+
+        viewModelScope.launch {
+            try {
+                if (isFavorited.value) {
+                    customRepository.deleteFactByText(currentFact.text)
+                    _snackbarMessage.emit("Fact removed from favorites!")
+                } else {
                     customRepository.addFact(currentFact.text)
-                    _isFavorited.value = true
                     _snackbarMessage.emit("Fact saved to favorites!")
-                } catch (e: Exception) {
-                    _snackbarMessage.emit("Failed to save fact.")
                 }
+            } catch (e: Exception) {
+                _snackbarMessage.emit("Operation failed.")
             }
         }
     }

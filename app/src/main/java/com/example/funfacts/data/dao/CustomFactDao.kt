@@ -22,4 +22,7 @@ interface CustomFactDao {
     @Update
     suspend fun updateFact(fact: CustomFactEntity)
 
+    @Query("DELETE FROM custom_facts WHERE text = :text")
+    suspend fun deleteFactByText(text: String)
+
 }
