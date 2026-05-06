@@ -1,7 +1,7 @@
 package com.example.funfacts.di
 
 import android.content.Context
-import com.example.funfacts.data.DatabaseProvider
+import androidx.room.Room
 import com.example.funfacts.data.dao.CustomFactDao
 import com.example.funfacts.data.database.AppDatabase
 import com.example.funfacts.data.repository.CustomFactRepository
@@ -19,7 +19,13 @@ object AppModule {
     @Provides // used when u have provided the implementation already (use @binds on interface)
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        return DatabaseProvider.getDatabase(context)
+        return Room.databaseBuilder(
+            context.applicationContext,
+            AppDatabase::class.java,
+            "facts_db"
+
+        ).build()
+
     }
 
     @Provides
