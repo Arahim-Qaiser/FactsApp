@@ -108,4 +108,49 @@ class HomeScreenTest {
         
         verify(onNavigateMock).invoke()
     }
+    @Test
+    fun homeScreen_clickToggleTheme_callsOnToggleTheme() {
+        val onToggleMock: () -> Unit = mock()
+
+        composeTestRule.setContent {
+            HomeScreenContent(
+                fact = null,
+                isLoading = false,
+                onFetch = {},
+                onNavigateToCustom = {},
+                onToggleTheme = onToggleMock,
+                snackbarHostState = SnackbarHostState(),
+                isFavorited = false,
+                onFavoriteClick = {},
+
+                )
+        }
+        composeTestRule.onNodeWithContentDescription("Theme Toggle").performClick()
+
+        verify(onToggleMock).invoke()
+    }
+    @Test
+    fun homeScreen_clickFavorite_callsOnFavoriteClick() {
+        val onFavoriteMock: () -> Unit = mock()
+        val factText = "Honey never spoils."
+        val fact = Fact(id = "1", text = factText)
+        composeTestRule.setContent {
+            HomeScreenContent(
+                fact = fact,
+                isLoading = false,
+                onFetch = {},
+                onNavigateToCustom = {},
+                onToggleTheme = {},
+                snackbarHostState = SnackbarHostState(),
+                isFavorited = false,
+                onFavoriteClick = onFavoriteMock,
+            )
+
+        }
+        composeTestRule.onNodeWithContentDescription("Save to favorites").performClick()
+
+        verify(onFavoriteMock).invoke()
+
+    }
+
 }

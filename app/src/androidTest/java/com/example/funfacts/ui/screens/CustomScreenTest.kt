@@ -77,7 +77,7 @@ class CustomScreenTest {
         }
 
         composeTestRule.onNodeWithText("Enter a fact").performTextInput("New Fact")
-        
+
         verify(onTextChangeMock).invoke("New Fact")
     }
 
@@ -98,7 +98,7 @@ class CustomScreenTest {
         }
 
         composeTestRule.onNodeWithText("Add Fact").performClick()
-        
+
         verify(onAddFactMock).invoke()
     }
 
@@ -120,7 +120,7 @@ class CustomScreenTest {
         }
 
         composeTestRule.onNodeWithContentDescription("Delete").performClick()
-        
+
         verify(onDeleteFactMock).invoke(fact)
     }
 
@@ -141,7 +141,24 @@ class CustomScreenTest {
         }
 
         composeTestRule.onNodeWithContentDescription("Back").performClick()
-        
+
         verify(onBackMock).invoke()
+    }
+
+    @Test
+    fun customScreen_emptyText_doesNotCallOnAddFact() {
+        val onAddFactMock: () -> Unit = mock()
+        composeTestRule.setContent {
+            CustomScreenContent(
+                text = "",
+                facts = emptyList(),
+                onBack = {},
+                onTextChange = {},
+                onAddFact = onAddFactMock,
+                onDeleteFact = {},
+                snackbarHostState = SnackbarHostState()
+            )
+        }
+
     }
 }

@@ -65,4 +65,26 @@ class HomeViewModelTest {
         assertThat(viewModel.fact.value?.text).isEqualTo("Error fetching fact")
         assertThat(viewModel.isLoading.value).isFalse()
     }
+    @Test
+    fun `fetchRandomFact updates state on success`() = runTest {
+        val mockFact = Fact(id = "1", text = "Shrimps heart is in its head")
+        whenever(repository.getRandomFacts()).thenReturn(mockFact)
+
+        viewModel = HomeViewModel(repository, customRepository = mock())
+        advanceUntilIdle()
+
+        assertThat(viewModel.fact.value).isEqualTo(mockFact)
+        assertThat(viewModel.isLoading.value).isFalse()
+
+    }
+    @Test
+    fun `fetchRandomFact updates isLoading state`() = runTest {
+        val mockFact = Fact(id = "1", text = "Shrimps heart is in its head")
+        whenever(repository.getRandomFacts()).thenReturn(mockFact)
+
+        viewModel = HomeViewModel(repository, customRepository = mock())
+        advanceUntilIdle()
+
+        assertThat(viewModel.isLoading.value).isFalse()
+    }
 }

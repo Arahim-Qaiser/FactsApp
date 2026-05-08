@@ -55,4 +55,16 @@ class CustomFactDaoTest {
 
         assertThat(allFacts).isEmpty()
     }
+    @Test
+    fun updateFact() = runBlocking {
+        var fact = CustomFactEntity(id = 1, text = "Original text")
+        dao.insertFact(fact)
+        fact.text = "Updated text"
+        dao.updateFact(fact)
+
+        val allFacts = dao.getAllFacts().first()
+        assertThat(allFacts).hasSize(1)
+        assertThat(allFacts[0].text).isEqualTo("Updated text")
+
+    }
 }

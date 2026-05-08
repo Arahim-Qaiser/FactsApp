@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -107,28 +109,37 @@ fun HomeScreenContent(
             FooterText()
         }
     ) { paddingValues ->
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.weight(0.5f))
+            val scopeHeight = maxHeight
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .heightIn(scopeHeight)
+                    .padding(paddingValues)
+                    .padding(horizontal = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.weight(0.5f))
 
-            BannerCard()
+                BannerCard()
 
-            Spacer(modifier = Modifier.weight(0.5f))
+                Spacer(modifier = Modifier.weight(0.5f))
 
-            FactCard(
-                fact = fact,
-                isLoading = isLoading,
-                isFavorited = isFavorited,
-                onFetch = onFetch,
-                onFavoriteClick = onFavoriteClick
-            )
+                FactCard(
+                    fact = fact,
+                    isLoading = isLoading,
+                    isFavorited = isFavorited,
+                    onFetch = onFetch,
+                    onFavoriteClick = onFavoriteClick
+                )
 
-            Spacer(modifier = Modifier.weight(0.5f))
+                Spacer(modifier = Modifier.weight(0.5f))
+            }
         }
     }
 }

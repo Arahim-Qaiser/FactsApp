@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class CustomFactEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val text: String
+    var text: String
 )

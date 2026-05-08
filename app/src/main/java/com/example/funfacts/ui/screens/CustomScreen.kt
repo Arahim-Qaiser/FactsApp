@@ -2,6 +2,7 @@ package com.example.funfacts.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,13 +10,16 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -121,10 +125,10 @@ fun FactsList(facts: List<CustomFactEntity>, onDelete: (CustomFactEntity) -> Uni
             }
         }
     } else {
-        LazyColumn(
+        Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            items(facts) { fact ->
+             facts.forEach{ fact ->
 
                 Card(
                     modifier = Modifier
@@ -212,9 +216,17 @@ fun CustomScreenContent(
             CustomTopBar(onBack = onBack)
       },
     ) { paddingValues ->
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            val scopeHeight = maxHeight
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .heightIn(scopeHeight)
                 .padding(paddingValues)
                 .padding(horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -252,6 +264,7 @@ fun CustomScreenContent(
 
             Spacer(modifier = Modifier.weight(0.5f))
         }
+    }
     }
 }
 
