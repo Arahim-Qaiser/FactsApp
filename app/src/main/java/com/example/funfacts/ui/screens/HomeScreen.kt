@@ -1,5 +1,8 @@
 package com.example.funfacts.ui.screens
 
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +30,7 @@ import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,6 +53,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -98,7 +104,7 @@ fun HomeScreenContent(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing),
+            .systemBarsPadding(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -153,7 +159,10 @@ fun HomeTopBar(onNavigateToCustom: () -> Unit, onToggleTheme: () -> Unit) {
             .fillMaxWidth()
             .padding(top = 16.dp, start = 8.dp, end = 8.dp)
             .height(64.dp)
-            .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(28.dp))
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(28.dp)
+            )
             .padding(horizontal = 24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -164,7 +173,8 @@ fun HomeTopBar(onNavigateToCustom: () -> Unit, onToggleTheme: () -> Unit) {
         )
 
         Spacer(Modifier.weight(1f))
-        IconButton(onClick = onToggleTheme,
+        IconButton(
+            onClick = onToggleTheme,
             colors = IconButtonDefaults.iconButtonColors(
                 contentColor = MaterialTheme.colorScheme.onSecondary,
                 containerColor = MaterialTheme.colorScheme.secondary,
@@ -177,7 +187,8 @@ fun HomeTopBar(onNavigateToCustom: () -> Unit, onToggleTheme: () -> Unit) {
                 tint = MaterialTheme.colorScheme.onPrimary,
                 )
         }
-        IconButton(onClick = onNavigateToCustom,
+        IconButton(
+            onClick = onNavigateToCustom,
             colors = IconButtonDefaults.iconButtonColors(
                 contentColor = MaterialTheme.colorScheme.onSecondary,
                 containerColor = MaterialTheme.colorScheme.secondary,
@@ -235,6 +246,7 @@ fun FactCard(
     isLoading: Boolean,
     isFavorited: Boolean
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val favoriteColor by animateColorAsState(
         targetValue = if (isFavorited) Color.Red else MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.6f),
@@ -253,6 +265,20 @@ fun FactCard(
             .padding(horizontal = 16.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
+            IconButton(
+                onClick = { fact?.let { shareToWhatsApp(context, it.text) } },
+                enabled = !isLoading && fact != null,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Share, // You may need to import this
+                    contentDescription = "Share on WhatsApp",
+                    tint = MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.6f),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
             // Favorite Button at Top Right
             IconButton(
                 onClick = onFavoriteClick,
@@ -355,4 +381,31 @@ fun HomeScreenPreview() {
         onToggleTheme = {},
         snackbarHostState = SnackbarHostState()
     )
+}
+fun shareToWhatsApp(context: Context, factText: String) {
+    val shareMessage = "Did you know? \n\n$factText"
+
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        setPackage("com.whatsapp")
+        putExtra(Intent.EXTRA_TEXT, shareMessage)
+    }
+
+    try {
+        // Try to open the native app
+        context.startActivity(sendIntent)
+    } catch (e: Exception) {
+        // Fallback: Open WhatsApp Web in the browser
+        // We must encode the text to make it URL-safe
+        val encodedMessage = android.net.Uri.encode(shareMessage)
+        val url = "https://wa.me/?text=$encodedMessage"
+        val browserIntent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
+
+        try {
+            context.startActivity(browserIntent)
+        } catch (activityException: Exception) {
+            // Final safety check if no browser is available
+            Toast.makeText(context, "No browser or WhatsApp found", Toast.LENGTH_SHORT).show()
+        }
+    }
 }

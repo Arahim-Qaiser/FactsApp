@@ -87,4 +87,44 @@ class HomeViewModelTest {
 
         assertThat(viewModel.isLoading.value).isFalse()
     }
+//    @Test
+//    fun `toggleFavorite adds fact to favorites`() = runTest {
+//        val mockFact = Fact(id = "1", text = "Shrimps heart is in its head")
+//        whenever(repository.getRandomFacts()).thenReturn(mockFact)
+//
+//        viewModel = HomeViewModel(repository, customRepository = mock())
+//        advanceUntilIdle()
+//
+//        viewModel.toggleFavorite()
+//        advanceUntilIdle()
+//        assertThat(viewModel.isFavorited.value).isTrue()
+//    }
+//    @Test
+//    fun `toggleFavorite removes fact from favorites`() = runTest {
+//        val mockFact = Fact(id = "1", text = "Shrimps heart is in its head")
+//        whenever(repository.getRandomFacts()).thenReturn(mockFact)
+//
+//        viewModel = HomeViewModel(repository, customRepository = mock())
+//        advanceUntilIdle()
+//
+//        viewModel.toggleFavorite()
+//        advanceUntilIdle()
+//        assertThat(viewModel.isFavorited.value).isTrue()
+//        viewModel.toggleFavorite()
+//        advanceUntilIdle()
+//        assertThat(viewModel.isFavorited.value).isFalse()
+//    }
+//    @Test
+//    fun `toggleFavorite handles error`() = runTest {
+//        whenever(repository.getRandomFacts()).thenThrow(RuntimeException("Network Error"))
+//
+//        viewModel = HomeViewModel(repository, customRepository = mock())
+//        advanceUntilIdle()
+//
+//        viewModel.toggleFavorite()
+//        advanceUntilIdle()
+//        assertThat(viewModel.isFavorited.value).isFalse()
+//        assertThat(viewModel.snackbarMessage).isEqualTo("Operation failed.")
+//
+//    }
 }
