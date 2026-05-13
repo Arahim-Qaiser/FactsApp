@@ -85,7 +85,7 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:1.4.2")
     androidTestImplementation("org.mockito:mockito-android:5.11.0")
     androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
-
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

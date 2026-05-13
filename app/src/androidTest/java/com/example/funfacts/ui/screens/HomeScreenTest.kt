@@ -1,5 +1,6 @@
 package com.example.funfacts.ui.screens
 
+import android.content.Intent
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -7,8 +8,10 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.funfacts.data.Fact
+import com.google.common.base.CharMatcher.any
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 
@@ -152,5 +155,29 @@ class HomeScreenTest {
         verify(onFavoriteMock).invoke()
 
     }
+    @Test
+    fun homeScreen_clickShare_callsOnShare() {
+        val onShareMock: () -> Unit = mock()
+        val factText = "Honey never spoils."
+        val fact = Fact(id = "1", text = factText)
+        composeTestRule.setContent {
+            HomeScreenContent(
+                fact = fact,
+                isLoading = false,
+                onFetch = {},
+                onNavigateToCustom = {},
+                onToggleTheme = {},
+                snackbarHostState = SnackbarHostState(),
+                isFavorited = false,
+                onFavoriteClick = onShareMock,
+            )
+
+        }
+        composeTestRule.onNodeWithContentDescription("Share on WhatsApp").performClick()
+
+        verify(onShareMock).invoke()
+
+    }
+
 
 }

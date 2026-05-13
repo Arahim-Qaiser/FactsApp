@@ -19,6 +19,9 @@
       <SelectionState runConfigName="homeScreen_clickFavorite_callsOnFavoriteClick()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="insertAndGetAllFacts()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

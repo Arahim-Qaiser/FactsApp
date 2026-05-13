@@ -161,4 +161,44 @@ class CustomScreenTest {
         }
 
     }
+    @Test
+    fun customScreen_nonEmptyText_callsOnAddFact() {
+        val onAddFactMock: () -> Unit = mock()
+        composeTestRule.setContent {
+            CustomScreenContent(
+                text = "New Fact",
+                facts = emptyList(),
+                onBack = {},
+                onTextChange = {},
+                onAddFact = onAddFactMock,
+                onDeleteFact = {},
+                snackbarHostState = SnackbarHostState()
+            )
+        }
+
+        composeTestRule.onNodeWithText("Add Fact").performClick()
+
+        verify(onAddFactMock).invoke()
+    }
+
+//    @Test
+//    fun customScreen_emptyText_doesNotCallOnDeleteFact() {
+//        val onDeleteFactMock: (CustomFactEntity) -> Unit = mock()
+//        composeTestRule.setContent {
+//            CustomScreenContent(
+//                text = "",
+//                facts = emptyList(),
+//                onBack = {},
+//                onTextChange = {},
+//                onAddFact = {},
+//                onDeleteFact = onDeleteFactMock,
+//                snackbarHostState = SnackbarHostState()
+//            )
+//        }
+//        composeTestRule.onNodeWithContentDescription("Delete").performClick()
+//
+//        verify(onDeleteFactMock).invoke()
+//        }
+
+
 }

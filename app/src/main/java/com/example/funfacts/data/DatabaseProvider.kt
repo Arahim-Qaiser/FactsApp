@@ -1,11 +1,12 @@
-//package com.example.funfacts.data
-//
-//import android.content.Context
-//import androidx.room.Room
-//import com.example.funfacts.data.database.AppDatabase
-//
-//object DatabaseProvider {
-//
+package com.example.funfacts.data
+
+import android.content.Context
+import androidx.room.Room
+import com.example.funfacts.data.database.AppDatabase
+
+object DatabaseProvider {
+
+
 //    @Volatile
 //    private var INSTANCE: AppDatabase? = null
 //
@@ -21,4 +22,4 @@
 //            instance
 //        }
 //    }
-//}
+}

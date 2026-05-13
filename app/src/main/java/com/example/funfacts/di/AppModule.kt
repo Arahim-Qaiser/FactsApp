@@ -33,9 +33,9 @@ object AppModule {
         return database.dao()
     }
 
-    @Provides
-    @Singleton
-    fun provideCustomFactRepository(dao: CustomFactDao): CustomFactRepository {
-        return CustomFactRepository(dao)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideCustomFactRepository(dao: CustomFactDao): CustomFactRepository {
+//        return CustomFactRepository(dao)
+//    }
 }

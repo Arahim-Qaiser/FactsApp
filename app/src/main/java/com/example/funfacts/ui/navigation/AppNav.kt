@@ -13,7 +13,6 @@ import com.example.funfacts.ui.screens.HomeScreen
 @Composable
 fun AppNav(onToggleTheme: () -> Unit) {
     val backStack = rememberNavBackStack(AppScreen.Home)
-
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },

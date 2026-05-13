@@ -1,8 +1,14 @@
 package com.example.funfacts.data.repository
 import com.example.funfacts.data.dao.CustomFactDao
 import com.example.funfacts.data.entities.CustomFactEntity
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CustomFactRepository(
+@Singleton
+
+class CustomFactRepository @Inject constructor
+
+        (
     private val dao: CustomFactDao
 ) {
 
