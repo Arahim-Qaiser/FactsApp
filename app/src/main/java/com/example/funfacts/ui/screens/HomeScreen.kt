@@ -130,7 +130,7 @@ fun HomeScreenContent(
                     .padding(horizontal = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(modifier = Modifier.weight(0.5f))
+
 
                 BannerCard()
 
