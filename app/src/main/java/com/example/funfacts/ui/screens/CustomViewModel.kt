@@ -34,7 +34,11 @@ class CustomViewModel @Inject constructor(
 
 
     fun onTextChange(newText: String) {
-        _inputText.value = newText
+        val sanitizedText = newText.replace(Regex("\n{3,}"), "\n\n")
+
+        if (sanitizedText.length <= 500) {
+            _inputText.value = sanitizedText
+        }
     }
 
     fun addFact() {

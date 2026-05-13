@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,17 +39,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -99,8 +106,79 @@ fun InputCard(text: String, onTextChange: (String) -> Unit) {
     }
 }
 
+//@Composable
+//fun FactsList(facts: List<CustomFactEntity>, onDelete: (CustomFactEntity) -> Unit){
+//    if (facts.isEmpty()) {
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(32.dp),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                Icon(
+//                    imageVector = Icons.Default.Info,
+//                    contentDescription = null,
+//                    modifier = Modifier.size(64.dp),
+//                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+//                )
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Text(
+//                    text = "No custom facts added yet. Start by entering one above!",
+//                    style = Typography.bodyMedium,
+//                    textAlign = TextAlign.Center,
+//                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+//                )
+//            }
+//        }
+//    } else {
+//        Column(
+//            modifier = Modifier.fillMaxSize()
+//        ) {
+//             facts.forEach{ fact ->
+//
+//                Card(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 6.dp),
+//                    shape = RoundedCornerShape(16.dp),
+//                    elevation = CardDefaults.cardElevation(8.dp),
+//                    colors = CardDefaults.cardColors(
+//                        containerColor = MaterialTheme.colorScheme.tertiary
+//                    )
+//                ) {
+//
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(16.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//
+//                        Text(
+//                            text = fact.text,
+//                            modifier = Modifier.weight(1f),
+//                            color = MaterialTheme.colorScheme.onSurface
+//                        )
+//
+//                        IconButton(onClick = {onDelete(fact)}) {
+//                            Icon(
+//                                imageVector = Icons.Default.Close,
+//                                contentDescription = "Delete",
+//                                tint = MaterialTheme.colorScheme.onSurface
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 @Composable
-fun FactsList(facts: List<CustomFactEntity>, onDelete: (CustomFactEntity) -> Unit){
+fun FactsList(
+    facts: List<CustomFactEntity>,
+    onDelete: (CustomFactEntity) -> Unit
+) {
     if (facts.isEmpty()) {
         Box(
             modifier = Modifier
@@ -125,49 +203,96 @@ fun FactsList(facts: List<CustomFactEntity>, onDelete: (CustomFactEntity) -> Uni
             }
         }
     } else {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-             facts.forEach{ fact ->
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary
-                    )
-                ) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Text(
-                            text = fact.text,
-                            modifier = Modifier.weight(1f),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-
-                        IconButton(onClick = {onDelete(fact)}) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Delete",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-                }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            facts.forEach { fact ->
+                FactItem(fact = fact, onDelete = onDelete)
             }
         }
     }
 }
 
+@Composable
+fun FactItem(
+    fact: CustomFactEntity,
+    onDelete: (CustomFactEntity) -> Unit
+) {
+    var isOverflowing by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiary
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = fact.text,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis, // Add "..."
+                        onTextLayout = { textLayoutResult ->
+                            isOverflowing = textLayoutResult.hasVisualOverflow
+                        }
+                    )
+
+                    if (isOverflowing) {
+                        TextButton(
+                            onClick = { showDialog = true },
+                            contentPadding = PaddingValues(0.dp),
+                            modifier = Modifier.height(30.dp)
+                        ) {
+                            Text(
+                                "Read More",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+
+                        }
+                    }
+                }
+
+                IconButton(onClick = { onDelete(fact) }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Delete",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+        }
+    }
+
+    // Full Text Dialog
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Full Fact") },
+            text = {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Text(text = fact.text)
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Close")
+                }
+            },
+            shape = RoundedCornerShape(24.dp),
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    }
+}
 @Composable
 fun CustomScreen(
     viewModel: CustomViewModel = hiltViewModel(),
@@ -209,7 +334,7 @@ fun CustomScreenContent(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing),
+            .systemBarsPadding(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -231,7 +356,7 @@ fun CustomScreenContent(
                 .padding(horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
 
             InputCard(
                 text = text,
@@ -255,7 +380,16 @@ fun CustomScreenContent(
                     style = Typography.bodySmall
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Stored Facts",
+                style = Typography.bodySmall,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp, start = 8.dp, top = 8.dp),
+                textAlign = TextAlign.Start,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             FactsList(
                 facts = facts,
                 onDelete = onDeleteFact
@@ -269,24 +403,28 @@ fun CustomScreenContent(
 }
 
 @Composable
-fun CustomTopBar(onBack: () -> Unit,)
+fun CustomTopBar(onBack: () -> Unit)
 {
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 16.dp, start = 8.dp, end = 8.dp)
             .height(64.dp)
             .background(
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(28.dp),
-            ).padding(8.dp)
+            )
+            .padding(8.dp)
     ) {
 
-        IconButton(onClick = onBack,
+        IconButton(
+            onClick = onBack,
             colors = IconButtonDefaults.iconButtonColors(
                 contentColor = MaterialTheme.colorScheme.onSecondary,
                 containerColor = MaterialTheme.colorScheme.secondary,
             ),
-            modifier = Modifier.padding(start = 4.dp)
+            modifier = Modifier
+                .padding(start = 4.dp)
                 .align(Alignment.CenterStart),
         ){
             Icon(
